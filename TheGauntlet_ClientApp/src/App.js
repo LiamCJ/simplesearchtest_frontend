@@ -1,14 +1,18 @@
 import React from 'react';
 import './App.css';
-import Header from './components/header.js';
-import { Route, NavLink, HashRouter as Router} from 'react-router-dom'
+import Landing from './components/index';
+import StatePage from './components/state_page';
+import { Route, HashRouter as Router} from 'react-router-dom'
 
 class App extends React.Component {
     render() {
         return (
-            <section>
-                    <Header/>
-            </section>
+            <React.Fragment>
+                    <Router>
+                        <Route exact path="/" component={Landing} />
+                        <Route path="/StatePage" component={StatePage} />
+                    </Router>   
+            </React.Fragment>
         )
     }
 }
