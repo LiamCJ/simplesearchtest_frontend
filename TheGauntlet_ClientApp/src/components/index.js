@@ -1,12 +1,14 @@
 import React from 'react';
-import State_List from './state_list';
+import Header from './header.js';
+import StateList from './state_list';
 
 class Landing extends React.Component {
 
 render(){
 		return (
 			 <section>
-                    <State_List/> 
+                <Header name="" />
+                <StateList/> 
             </section>
 		)
 	}

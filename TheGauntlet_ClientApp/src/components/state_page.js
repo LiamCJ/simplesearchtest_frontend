@@ -1,20 +1,16 @@
 import React from 'react';
+import Header from './header.js';
 
-class State_Page extends React.Component {
-	    constructor() {
-        super();
-        this.state = {
-            api:[]
-       }
-     }
+class StatePage extends React.Component {
 
 render(){
 		return (
 			<React.Fragment>
-				<h1>Page</h1>
+				<Header name={">" + this.props.location.state.name}/>
+				 <iframe title="wikipedia" src={this.props.location.state.url} height="800px" width="800px"></iframe> 
 			</React.Fragment>
 		)
 	}
 }
 
-export default State_Page;
+export default StatePage;

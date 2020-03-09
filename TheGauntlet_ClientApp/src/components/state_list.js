@@ -1,86 +1,77 @@
 import React from 'react';
+import {withRouter, Redirect} from 'react-router-dom';
 
-class State_List extends React.Component {
-    constructor() {
-        super();
- 		this.state = {
-      		 displayMenu: false,
-     	};
-
-	};
-
-	showDropdownMenu = (event) => {
-	    event.preventDefault();
-	    this.setState({ displayMenu: true }, () => {
-	    document.addEventListener('click', this.hideDropdownMenu);
-	    });
-  	}
-
-  	hideDropdownMenu = () =>{
-	    this.setState({ displayMenu: false }, () => {
-	      document.removeEventListener('click', this.hideDropdownMenu);
-	    });
-
-  	}
-
-  	dropdown = () =>{
-  		var coll = document.getElementsByClassName("collapsible");
-		var i;
-
-		for (i = 0; i < coll.length; i++) {
-		  coll[i].addEventListener("click", function() {
-		    this.classList.toggle("active");
-		    var content = this.nextElementSibling;
-		    if (content.style.display === "block") {
-		      content.style.display = "none";
-		    } else {
-		      content.style.display = "block";
-		    }
-		  });
-		}
-  	}
-
-  render() {
-  	
-  		var coll = document.getElementsByClassName("collapsible");
-		var i;
-
-		for (i = 0; i < coll.length; i++) {
-		  coll[i].addEventListener("click", function() {
-		    this.classList.toggle("active");
-		    var content = this.nextElementSibling;
-		    if (content.style.display === "block") {
-		      content.style.display = "none";
-		    } else {
-		      content.style.display = "block";
-		    }
-		  });
-		}
-
-    return (
-        <div  className="dropdown" style = {{background:"red",width:"200px"}} >
-         <button className="button collapsible" > My Setting </button>
-
-	          {/* { this.state.displayMenu ? ( */}
-		          <ul>
-			         <li><a className="active" href="#Create Page">Create Page</a></li>
-			         <li><a href="#Manage Pages">Manage Pages</a></li>
-			         <li><a href="#Create Ads">Create Ads</a></li>
-			         <li><a href="#Manage Ads">Manage Ads</a></li>
-			         <li><a href="#Activity Logs">Activity Logs</a></li>
-			         <li><a href="#Setting">Setting</a></li>
-			         <li><a href="#Log Out">Log Out</a></li>
-		          </ul>
-	        {/* 	): */}
-	        {/* ( */}
-	        {/*   null */}
-	        {/* ) */}
-	        {/* } */}
-
-       </div>
-
-    );
-  }
+const callStates = async () =>{
+    const searchTest = await fetch(`http://localhost:4895/api/v1/state`);
+    const result  = await searchTest.json();
+     try {
+        var allStates = result.data.states; 
+        return allStates;
+    }
+    // if the (result) is not loaded the following will occur
+    catch (err) {
+        console.log(err); // the error will be displayed in the console
+    }
 }
 
-export default State_List;
+class StateList extends React.Component {
+        constructor() {
+        super();
+        this.state = {
+            stateData: {},
+            statesList :[],
+            redirect : false
+       }
+     }
+
+     getStates = () =>{
+        return callStates().then((states) => {
+            // statesList = states
+            // this.setState({statesList : states})
+            states.map((object, index) => {
+                this.setState({ 
+                  statesList: [...this.state.statesList, object]
+                })
+            })
+
+        })
+        .catch((err) => {
+            return err;
+        });
+    }
+
+    handleSubmit = (stateName, stateUrl) =>{;
+        this.setState({ stateData:{name: stateName, url: stateUrl}, redirect: true } );
+
+    }
+
+
+    render() {
+        this.getStates();
+// this.handleSubmit(stateInfo.name, stateInfo.url)
+        if(this.state.redirect == true){
+            return(
+                <Redirect to= {{ pathname: 'StatePage', state: { name: this.state.stateData.name, url: this.state.stateData.url } }} />
+            )
+        }
+
+        return (
+            <React.Fragment>
+                <div className ='wrapper' >
+                   <ul className ='accordion_list'>
+                    {this.state.statesList.map((stateInfo, index) =>{
+                        return(
+                            <li className = 'accordion_item_line' key={index} onClick={this.getStates()} >
+                               {stateInfo.name} 
+                            </li>        
+                        )
+                    })}
+                   </ul>
+                </div>
+            </React.Fragment>    
+        )
+    }
+}
+
+
+export default withRouter(StateList);
