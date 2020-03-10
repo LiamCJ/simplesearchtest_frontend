@@ -6,6 +6,7 @@ class Landing extends React.Component {
 
 render(){
 		return (
+			// The Ladning Page Component Containing The Header and State List
 			 <section>
                 <Header name="" />
                 <StateList/> 
